@@ -5,9 +5,15 @@
 </head>
 <body>
   <% include partials/_header %>
-
   <% for (let link in urls) { %>
     <li><%= link %> <%= urls[link] %> </li>
-  <% } %>
+
+    <a href='/urls/<%=link%>'>  Edit </a>
+    <form method="POST" action="/urls/<%= link %>/delete">
+  <!-- with the form, you just need the button - the form executes a post, that you need to write your route -->
+  <input type="submit" name="newURL" value='Delete'>
+</form>
+<% } %>
+
 </body>
 </html>

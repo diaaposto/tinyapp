@@ -9,5 +9,14 @@
     <% include partials/_header %>
     
     <%= shortURL %> <%= longURL %>
+
+      <form action="/urls/<%= shortURL %>" method="POST">
+        <label for="longURL">Enter a URL:</label>
+        <input id="longURL" type="text" name="longURL" value="<%= longURL %>" style="width: 300px">
+        <input type="submit" value="Submit">
+      </form>
+      <!-- with the form, you just need the button - the form executes a post, that you need to write your route -->
+      <input type="submit" name="newURL" value='Update'>
+    </form>
 </body>
 </html>

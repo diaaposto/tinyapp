@@ -79,6 +79,18 @@ app.get("/hello", (req, res) => {
     res.end("<html><body>Hello <b>World</b></body></html>\n");
 });  
 
+app.post("/urls/:id", (req, res) => {
+  // console.log("the content of the form:", req.body);
+  urlDatabase[req.params.id] = req.body.longURL;
+  res.redirect('/urls/' + req.params.id);
+});
+
+app.post("/urls/:id/delete", (req, res) => {
+  // console.log(req.params.id)
+  delete urlDatabase[req.params.id];
+  res.redirect("/urls");
+});
+
 app.post("/urls", (req, res) => {
    let gnShortUrl = generateRandomString();
   //  console.log(`adding ${gnShortUrl} ... ${gnShortUrl + req.body.longURL}`)
@@ -87,8 +99,7 @@ app.post("/urls", (req, res) => {
   //create a new key in database, short key, and value will be long url
   //then redirect client to shortURL page 
   // console.log(urlDatabase);  // debug statement to see POST parameters
-
-  res.redirect("http://localhost:8080/urls/" + gnShortUrl);         // Respond with 'Ok' (we will replace this)
+  res.redirect("/urls/" + gnShortUrl);         // Respond with 'Ok' (we will replace this)
 });
 
   app.listen(PORT, () => {
