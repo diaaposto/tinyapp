@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
   <title>TinyApp</title>
-  
 </head>
 <body>
   <% include partials/_header %>
-  
+
   <% for (let link in urls) { %>
     <li><%= link %> <%= urls[link] %> </li>
   <% } %>

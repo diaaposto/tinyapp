@@ -17,7 +17,8 @@ function generateRandomString() {
   let possibleOutcomes = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
   for (let i = 0; i < 6; i++) {
-    resultStr.concat(possibleOutcomes.charAt(Math.floor(Math.random() * possibleOutcomes.length)));
+    resultStr += possibleOutcomes.charAt(Math.floor(Math.random() * possibleOutcomes.length));
+    // console.log(`generating is fun ${resultStr}`)
   }
 
   return resultStr;
@@ -80,12 +81,12 @@ app.get("/hello", (req, res) => {
 
 app.post("/urls", (req, res) => {
    let gnShortUrl = generateRandomString();
-   
+  //  console.log(`adding ${gnShortUrl} ... ${gnShortUrl + req.body.longURL}`)
    urlDatabase[gnShortUrl] = req.body.longURL;
    // function short url generated 
   //create a new key in database, short key, and value will be long url
   //then redirect client to shortURL page 
-  console.log(urlDatabase);  // debug statement to see POST parameters
+  // console.log(urlDatabase);  // debug statement to see POST parameters
 
   res.redirect("http://localhost:8080/urls/" + gnShortUrl);         // Respond with 'Ok' (we will replace this)
 });
