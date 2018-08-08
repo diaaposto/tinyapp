@@ -5,12 +5,19 @@
 //make it so you can change the 20 or 5 at a moments notice 
 //if harcoded use list.length
 
+// ALPHANUMERIC FUNCTION QUESTIONS
+// Determine and discuss a couple limitations of the current approach of generating shortURL strings
+
+// Could you recommend a better approach that avoids the existing limitations?
+
+
+
 function generateRandomString() {
   let resultStr = '';
   let possibleOutcomes = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
   for (let i = 0; i < 6; i++) {
-    resultStr += possibleOutcomes.charAt(Math.floor(Math.random() * possibleOutcomes.length));
+    resultStr.concat(possibleOutcomes.charAt(Math.floor(Math.random() * possibleOutcomes.length)));
   }
 
   return resultStr;
@@ -27,7 +34,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
 // The body-parser library will allow us to access POST request parameters, such as req.body.longURL, which we will store in a variable called urlDatabase
-
+//when u receive post req find the generated key and then add the long url in
+//generate short url, add it to index, and then redirect
+//obj[key] = value;
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -70,8 +79,15 @@ app.get("/hello", (req, res) => {
 });  
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // debug statement to see POST parameters
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+   let gnShortUrl = generateRandomString();
+   
+   urlDatabase[gnShortUrl] = req.body.longURL;
+   // function short url generated 
+  //create a new key in database, short key, and value will be long url
+  //then redirect client to shortURL page 
+  console.log(urlDatabase);  // debug statement to see POST parameters
+
+  res.redirect("http://localhost:8080/urls/" + gnShortUrl);         // Respond with 'Ok' (we will replace this)
 });
 
   app.listen(PORT, () => {
