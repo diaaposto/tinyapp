@@ -30,7 +30,9 @@ const express = require("express");
 const app = express();
 const cookieParser = require('cookie-parser');
 const bodyParser = require("body-parser");
-const PORT = 8080; // default port 8080
+const PORT = process.env.PORT || 8080; // default port 8080
+//every operating system runs in an environment - key/value pairs that are set
+//path tells our shell where to look 
 
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -41,8 +43,8 @@ app.set("view engine", "ejs");
 //generate short url, add it to index, and then redirect
 //obj[key] = value;
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2 - ": "http://www.lighthouselabs.ca",
+  "9sm5xK - ": "http://www.google.com"
 };
 
 app.get("/", (req, res) => {
@@ -54,22 +56,32 @@ app.get("/", (req, res) => {
 // This is so you can use the key of that variable (in the above case the key is urls) 
 // to access the data within your template.
 
+//LOGIN/HOME PAGE
+
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+
+  let templateVars = { 
+    urls: urlDatabase,
+    username: req.cookies['username'] 
+  };
+  // console.log(templateVars);
   res.render("urls_index", templateVars);
 });
+
 
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+
 app.get("/urls/:id", (req, res) => {
   
   let templateVars = { 
     shortURL: req.params.id,
-    longURL: urlDatabase[req.params.id]
+    longURL: urlDatabase[req.params.id],
+    username: req.cookies['username'],
    };
-  // console.log(req);
+  console.log(templateVars);
   res.render("urls_show", templateVars);
 });
 
@@ -81,11 +93,57 @@ app.get("/hello", (req, res) => {
     res.end("<html><body>Hello <b>World</b></body></html>\n");
 });  
 
+//**************************** */
+
+// app.post("/login",  (req, res) => {
+//   const {username, password} = req.body;
+
+//   if (username && password) {
+//     const user = fetchUserByUsername(username);
+
+//     // if (user && user)
+//   }
+// })
+
+// app.post("/register", (req, res) => {
+//   const {username, password, password_confirm} = req.body;
+
+//   if (username && password && password_confirm) {
+//     //everything is good, try and register
+//     if (password === password_confirm) {
+//       const user = {
+//         id: userRandomId,
+//         username: username,
+//         password: password
+//       }
+
+//       users.push(user);
+//       res.cookie('user_id', user.id, {maxAge: 10 * 60 * 1000});
+//       res.redirect("/");
+
+//     } else {
+//       console.log("Passwords do not match");
+//       res.redirect("/register")
+//     }
+
+
+//   } else {
+//     console.log("Please provide all fields: username, password and password_confirm");
+//   }
+// })
+
+/**************** */
+
+//what are we doing here?
+
 app.post("/urls/:id", (req, res) => {
   // console.log("the content of the form:", req.body);
   urlDatabase[req.params.id] = req.body.longURL;
+  // console.log(req.body);
+  // console.log(req.params.id);
   res.redirect('/urls/' + req.params.id);
 });
+
 
 app.post("/urls/:id/delete", (req, res) => {
   // console.log(req.params.id)
@@ -93,7 +151,9 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls");
 });
 
+
 app.post("/urls", (req, res) => {
+  console.log(req.body);
    let gnShortUrl = generateRandomString();
   //  console.log(`adding ${gnShortUrl} ... ${gnShortUrl + req.body.longURL}`)
    urlDatabase[gnShortUrl] = req.body.longURL;
@@ -101,7 +161,15 @@ app.post("/urls", (req, res) => {
   //create a new key in database, short key, and value will be long url
   //then redirect client to shortURL page 
   // console.log(urlDatabase);  // debug statement to see POST parameters
+  // res.send("Ok");
   res.redirect("/urls/" + gnShortUrl);         // Respond with 'Ok' (we will replace this)
+});
+
+app.post("/login", (req, res) => {
+  console.log(req.body);
+  res.cookie('username', req.body.username); 
+  res.redirect('/urls');
+
 });
 
   app.listen(PORT, () => {
