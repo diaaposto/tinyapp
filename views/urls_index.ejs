@@ -1,19 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>TinyApp</title>
-</head>
-<body>
-  <% include partials/_header %>
-  <% for (let link in urls) { %>
-    <li><%= link %> <%= urls[link] %> </li>
-
-    <a href='/urls/<%=link%>'>  Edit </a>
-
-    <form method="POST" action="/urls/<%= link %>/delete">
-  <!-- with the form, you just need the button - the form executes a post, that you need to write your route -->
-  <input type="submit" name="newURL" value='Delete'>
-</form>
-<% } %>
-</body>
-</html>
+  <head>
+  <title>Tiny App</title>
+  </head>
+  <body>
+  <header>
+    <% include ./partials/_headers %>
+  </header>
+    <p>
+      <ul>
+        <% for(let key in url) { %>
+          <% if (url[key].linkid === username.id) { %>
+            <li><%= key %> <%= url[key].url %></li>
+            
+            <form action="/urls/<%= key  %>" method="POST">
+              <input readonly id="newURL" type="text" name="newURL" value="<%= url[key].longURL %>"> : <a href = "<%= url[key].longURL %>"> Visit the site </a>
+            </form>
+            
+            <form action="/urls/<%= key %>/delete" method="POST">
+              <input type="submit" value="Delete">
+            </form>
+            
+            <form action="/urls/<%= key %>" method="GET">
+              <input type="submit" value="Edit">
+            </form>
+            
+            <% } %>
+            <% } %>
+          </ul>
+        </p>
+      <a href = "/urls/new"> Want to shorten a new URL? </a>
+  </body>
+  </html>
